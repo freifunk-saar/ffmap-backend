@@ -7,7 +7,7 @@ import os
 import time
 
 from batman import batman
-from alfred import alfred
+from alfred import Alfred
 from rrddb import rrd
 from nodedb import NodeDB
 from d3mapbuilder import D3MapBuilder
@@ -55,8 +55,7 @@ if options['aliases']:
     db.import_aliases(json.load(open(aliases)))
 
 if options['alfred']:
-  af = alfred()
-  db.import_aliases(af.aliases())
+  db.import_aliases(Alfred.aliases())
 
 db.load_state("state.json")
 
