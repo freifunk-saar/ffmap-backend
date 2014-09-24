@@ -1,81 +1,101 @@
 #!/usr/bin/env python3
 
-import json
-import fileinput
 import argparse
+import json
 import os
-import time
-
-from batman import batman
-from alfred import Alfred
-from rrddb import rrd
-from nodedb import NodeDB
-from d3mapbuilder import D3MapBuilder
-
-# Force encoding to UTF-8
-import locale                                  # Ensures that subsequent open()s
-locale.getpreferredencoding = lambda _=None: 'UTF-8'  # are UTF-8 encoded.
-
 import sys
-#sys.stdin = open('/dev/stdin', 'r')
-#sys.stdout = open('/dev/stdout', 'w')
-#sys.stderr = open('/dev/stderr', 'w')
+import networkx as nx
+from datetime import datetime
+from networkx.readwrite import json_graph
+
+import alfred
+import nodes
+import graph
+from batman import batman
+from rrddb import rrd
 
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-a', '--aliases',
                   help='read aliases from FILE',
+                  default=[],
                   action='append',
                   metavar='FILE')
 
 parser.add_argument('-m', '--mesh', action='append',
-                  default=["bat0"],
                   help='batman mesh interface')
-
-parser.add_argument('-A', '--alfred', action='store_true',
-                  help='retrieve aliases from alfred')
 
 parser.add_argument('-d', '--destination-directory', action='store',
                   help='destination directory for generated files',required=True)
+
+parser.add_argument('--vpn', action='append', metavar='MAC',
+                    help='assume MAC to be part of the VPN')
+
+parser.add_argument('--prune', metavar='DAYS',
+                    help='forget nodes offline for at least DAYS')
 
 args = parser.parse_args()
 
 options = vars(args)
 
-db = NodeDB(int(time.time()))
+if not options['mesh']:
+  options['mesh'] = ['bat0']
 
-for mesh_interface in options['mesh']:
-  bm = batman(mesh_interface)
-  db.parse_vis_data(bm.vis_data(options['alfred']))
-  for gw in bm.gateway_list():
-    db.mark_gateway(gw)
+nodes_fn = os.path.join(options['destination_directory'], 'nodes.json')
+graph_fn = os.path.join(options['destination_directory'], 'graph.json')
 
-if options['aliases']:
-  for aliases in options['aliases']:
-    db.import_aliases(json.load(open(aliases)))
+now = datetime.utcnow().replace(microsecond=0)
 
-if options['alfred']:
-  db.import_aliases(Alfred.aliases())
+try:
+  nodedb = json.load(open(nodes_fn))
 
-db.load_state("state.json")
+  # ignore if old format
+  if 'links' in nodedb:
+    raise
+except:
+  nodedb = {'nodes': dict()}
 
-# remove nodes that have been offline for more than 30 days
-db.prune_offline(time.time() - 30*86400)
+nodedb['timestamp'] = now.isoformat()
 
-db.dump_state("state.json")
+for node_id, node in nodedb['nodes'].items():
+  node['flags']['online'] = False
+
+nodes.import_nodeinfo(nodedb['nodes'], alfred.nodeinfo(), now, assume_online=True)
+
+for aliases in options['aliases']:
+  with open(aliases, 'r') as f:
+    nodes.import_nodeinfo(nodedb['nodes'], json.load(f), now, assume_online=False)
+
+nodes.reset_statistics(nodedb['nodes'])
+nodes.import_statistics(nodedb['nodes'], alfred.statistics())
+
+bm = list(map(lambda d: (d.vis_data(True), d.gateway_list()), map(batman, options['mesh'])))
+for vis_data, gateway_list in bm:
+  nodes.import_mesh_ifs_vis_data(nodedb['nodes'], vis_data)
+  nodes.import_vis_clientcount(nodedb['nodes'], vis_data)
+  nodes.mark_vis_data_online(nodedb['nodes'], vis_data, now)
+  nodes.mark_gateways(nodedb['nodes'], gateway_list)
+
+if options['prune']:
+  nodes.prune_nodes(nodedb['nodes'], now, int(options['prune']))
+
+batadv_graph = nx.DiGraph()
+for vis_data, gateway_list in bm:
+  graph.import_vis_data(batadv_graph, nodedb['nodes'], vis_data)
+
+if options['vpn']:
+  graph.mark_vpn(batadv_graph, frozenset(options['vpn']))
+
+batadv_graph = graph.merge_nodes(batadv_graph)
+batadv_graph = graph.to_undirected(batadv_graph)
+
+with open(nodes_fn, 'w') as f:
+  json.dump(nodedb, f)
+
+with open(graph_fn, 'w') as f:
+  json.dump({'batadv': json_graph.node_link_data(batadv_graph)}, f)
 
 scriptdir = os.path.dirname(os.path.realpath(__file__))
-
-m = D3MapBuilder(db)
-
-#Write nodes json
-nodes_json = open(options['destination_directory'] + '/nodes.json.new','w')
-nodes_json.write(m.build())
-nodes_json.close()
-
-#Move to destination
-os.rename(options['destination_directory'] + '/nodes.json.new',options['destination_directory'] + '/nodes.json')
-
-rrd = rrd(scriptdir +  "/nodedb/", options['destination_directory'] + "/nodes")
-rrd.update_database(db)
+rrd = rrd(scriptdir +  '/nodedb/', options['destination_directory'] + '/nodes')
+rrd.update_database(nodedb['nodes'])
 rrd.update_images()
