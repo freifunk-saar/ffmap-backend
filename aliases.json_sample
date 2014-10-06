@@ -2,6 +2,10 @@
   {
     "node_id": "krtek",
     "hostname": "krtek",
+    "location": {
+      "longitude": 10.74,
+      "latitude": 53.86
+    },
     "network": {
       "mesh_interfaces": [
         "00:25:86:e6:f1:bf"

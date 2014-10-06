@@ -11,7 +11,7 @@ def import_vis_data(graph, nodes, vis_data):
   graph.add_nodes_from(map(lambda a, b: (a, dict(primary=b, node_id=macs.get(b))), *zip(*chain(nodes_a, nodes_b))))
 
   edges = filter(lambda d: 'neighbor' in d, vis_data)
-  graph.add_edges_from(map(lambda d: (d['router'], d['neighbor'], dict(tq=d['label'])), edges))
+  graph.add_edges_from(map(lambda d: (d['router'], d['neighbor'], dict(tq=float(d['label']))), edges))
 
 def mark_vpn(graph, vpn_macs):
   components = map(frozenset, nx.weakly_connected_components(graph))

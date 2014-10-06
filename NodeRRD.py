@@ -1,6 +1,5 @@
 import os
 import subprocess
-from node import Node
 from RRD import RRD, DS, RRA
 
 class NodeRRD(RRD):
