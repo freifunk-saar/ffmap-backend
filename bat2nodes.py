@@ -50,13 +50,13 @@ for mesh_interface in options['mesh']:
   for gw in bm.gateway_list():
     db.mark_gateway(gw)
 
-if options['aliases']:
-  for aliases in options['aliases']:
-    db.import_aliases(json.load(open(aliases)))
-
 if options['alfred']:
   af = alfred()
   db.import_aliases(af.aliases())
+
+if options['aliases']:
+  for aliases in options['aliases']:
+    db.import_aliases(json.load(open(aliases)))
 
 db.load_state("state.json")
 

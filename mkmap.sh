@@ -7,10 +7,7 @@ DEST=$1
 
 [ "$DEST" ] || exit 1
 
-cd "$(dirname "$0")"/
-
-# ./ffhlwiki.py http://freifunk.metameute.de/wiki/Knoten > aliases_hl.json
-# ./ffhlwiki.py http://freifunk.metameute.de/wiki/Moelln:Knoten > aliases_moelln.json
+cd "$(dirname "$0")"
 
 # ./bat2nodes.py -A -a aliases.json -a aliases_hl.json -a aliases_moelln.json -d $DEST
-./bat2nodes.py -A -d $DEST
+sudo ./bat2nodes.py -A -a aliases.json -d $DEST
