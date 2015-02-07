@@ -226,10 +226,10 @@ class NodeDB:
         node.firmware = alias['firmware']
 		
       if 'firmware_release' in alias:
-        node.firmware = alias['firmware_release']
+        node.firmware_release = alias['firmware_release']
 		
       if 'hardware' in alias:
-        node.firmware = alias['hardware']
+        node.hardware = alias['hardware']
 
       if 'id' in alias:
         node.id = alias['id']
