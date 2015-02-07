@@ -10,6 +10,8 @@ class Node():
     })
     self.gps = None
     self.firmware = None
+	self.firmware_release
+	self.hardware
     self.clientcount = 0
     self.lastseen = 0
     self.firstseen = 0
