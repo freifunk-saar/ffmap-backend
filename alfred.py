@@ -24,7 +24,7 @@ class alfred:
         pass
 		
       try:
-        node_alias['firmware.release'] = node['software']['firmware']['release']
+        node_alias['firmware_release'] = node['software']['firmware']['release']
       except KeyError:
         pass
 		
