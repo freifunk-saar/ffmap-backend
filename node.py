@@ -10,10 +10,10 @@ class Node():
     })
     self.gps = None
     self.firmware = None
-	self.firmware_release = None
-	self.hardware = None
-	self.autoupdate = None
-	self.branch = None
+    self.firmware_release = None
+    self.hardware = None
+    self.autoupdate = None
+    self.branch = None
     self.clientcount = 0
     self.lastseen = 0
     self.firstseen = 0
