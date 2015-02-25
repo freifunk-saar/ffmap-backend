@@ -1,0 +1,6 @@
+{
+   "ca:fe:ba:be:00:01" : {
+      "name" : "gw1.lux.freifunk.net",
+      "vpn" : true
+   }
+}

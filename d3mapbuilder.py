@@ -16,7 +16,7 @@ class D3MapBuilder:
                         'geo': [float(x) for x in x.gps.split(" ")] if x.gps else None,
                         'firmware': x.firmware,
                         'firmware_release': x.firmware_release,
-                        'hardware': x.firmware,
+                        'hardware': x.hardware,
 						'autoupdate': x.autoupdate,
 						'branch': x.branch,
                         'flags': x.flags,
