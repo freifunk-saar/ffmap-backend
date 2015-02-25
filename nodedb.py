@@ -230,6 +230,12 @@ class NodeDB:
 		
       if 'hardware' in alias:
         node.firmware = alias['hardware']
+		
+      if 'autoupdate' in alias:
+        node.firmware = alias['autoupdate']
+		
+      if 'branch' in alias:
+        node.firmware = alias['branch']
 
       if 'id' in alias:
         node.id = alias['id']

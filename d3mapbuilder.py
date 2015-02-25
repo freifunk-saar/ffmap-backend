@@ -17,6 +17,8 @@ class D3MapBuilder:
                         'firmware': x.firmware,
                         'firmware_release': x.firmware_release,
                         'hardware': x.firmware,
+						'autoupdate': x.autoupdate,
+						'branch': x.branch,
                         'flags': x.flags,
                         'clientcount': x.clientcount
                        } for x in nodes]
