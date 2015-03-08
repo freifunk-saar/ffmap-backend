@@ -18,6 +18,8 @@ class rrd:
     self.globalDb = GlobalRRD(self.dbPath)
     self.imagePath = imagePath
     self.displayTimeGlobal = displayTimeGlobal
+	self.displayTimeGlobalMonth = displayTimeGlobalMonth
+	self.displayTimeGlobalYear = displayTimeGlobalYear
     self.displayTimeNode = displayTimeNode
 
     self.currentTimeInt = (int(time.time())/60)*60
