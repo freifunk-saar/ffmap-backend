@@ -10,6 +10,8 @@ class rrd:
               , databaseDirectory
               , imagePath
               , displayTimeGlobal = "7d"
+              , displayTimeGlobalMonth = "30d"
+              , displayTimeGlobalYear = "356d"
               , displayTimeNode = "1d"
               ):
     self.dbPath = databaseDirectory
@@ -44,6 +46,8 @@ class rrd:
     """
 
     self.globalDb.graph(os.path.join(self.imagePath, "globalGraph.png"), self.displayTimeGlobal)
+	self.globalDb.graph(os.path.join(self.imagePath, "globalMonth.png"), self.displayTimeGlobal)
+	self.globalDb.graph(os.path.join(self.imagePath, "globalYear.png"), self.displayTimeGlobal)
 
     nodeDbFiles = os.listdir(self.dbPath)
 
