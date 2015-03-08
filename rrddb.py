@@ -48,8 +48,8 @@ class rrd:
     """
 
     self.globalDb.graph(os.path.join(self.imagePath, "globalGraph.png"), self.displayTimeGlobal)
-    self.globalDb.graph(os.path.join(self.imagePath, "globalMonth.png"), self.displayTimeGlobalMonth)
-    self.globalDb.graph(os.path.join(self.imagePath, "globalYear.png"), self.displayTimeGlobalYear)
+    self.globalDb.graph(os.path.join(self.imagePath, "globalGraphMonth.png"), self.displayTimeGlobalMonth)
+    self.globalDb.graph(os.path.join(self.imagePath, "globalGraphYear.png"), self.displayTimeGlobalYear)
 
     nodeDbFiles = os.listdir(self.dbPath)
 
