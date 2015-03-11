@@ -12,6 +12,7 @@ class rrd:
               , displayTimeGlobal = "7d"
               , displayTimeGlobalMonth = "30d"
               , displayTimeGlobalYear = "356d"
+              , displayTimeGlobalDay = "1d"
               , displayTimeNode = "1d"
               ):
     self.dbPath = databaseDirectory
@@ -20,6 +21,7 @@ class rrd:
     self.displayTimeGlobal = displayTimeGlobal
     self.displayTimeGlobalMonth = displayTimeGlobalMonth
     self.displayTimeGlobalYear = displayTimeGlobalYear
+    self.displayTimeGlobalDay = displayTimeGlobalDay
     self.displayTimeNode = displayTimeNode
 
     self.currentTimeInt = (int(time.time())/60)*60
@@ -50,6 +52,7 @@ class rrd:
     self.globalDb.graph(os.path.join(self.imagePath, "globalGraph.png"), self.displayTimeGlobal)
     self.globalDb.graph(os.path.join(self.imagePath, "globalGraphMonth.png"), self.displayTimeGlobalMonth)
     self.globalDb.graph(os.path.join(self.imagePath, "globalGraphYear.png"), self.displayTimeGlobalYear)
+    self.globalDb.graph(os.path.join(self.imagePath, "globalGraphDay.png"), self.displayTimeGlobalDay)
 
     nodeDbFiles = os.listdir(self.dbPath)
 
