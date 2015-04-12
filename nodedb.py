@@ -33,6 +33,11 @@ class NodeDB:
                  , 'lastseen': node.lastseen
                  , 'firstseen': node.firstseen
                  , 'geo': node.gps
+                 , 'firmware': node.firmware
+                 , 'firmware_release': node.firmware_release
+                 , 'hardware': node.hardware
+                 , 'autoupdate': node.autoupdate
+                 , 'branch': node.branch
                  })
 
     with open(filename, "w") as f:
@@ -52,6 +57,11 @@ class NodeDB:
             node.name = n['name']
             node.lastseen = n['lastseen']
             node.gps = n['geo']
+            node.firmware = n['firmware']
+            node.firmware_release = n['firmware_release']
+            node.hardware = n['hardware']
+            node.autoupdate = n['autoupdate']
+            node.branch = n['branch']
             self._nodes.append(node)
 
           if 'firstseen' in n:
