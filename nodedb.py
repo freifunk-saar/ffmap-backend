@@ -22,6 +22,7 @@ class NodeDB:
   # remove all offlines nodes with lastseen < timestamp
   def prune_offline(self, timestamp):
     self._nodes = list(filter(lambda x: x.lastseen >= timestamp, self._nodes))
+    self._nodes = list(filter(lambda x: x.name != "", self._nodes))
 
   # write persistent state to file
   def dump_state(self, filename):
